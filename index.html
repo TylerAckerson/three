@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <title>Logo Fun</title>
+  <title>Treehouse Logo in three.js</title>
   <meta charset="utf-8">
 </head>
 <body style="margin: 0;">
@@ -10,7 +10,7 @@
   <script src="js/OrbitControls.js"></script>
 
   <script>
-    var scene, camera, renderer, theLogo;
+    var scene, camera, renderer;
 
     init();
     animate();
@@ -28,8 +28,7 @@
       document.body.appendChild(renderer.domElement);
 
       camera = new THREE.PerspectiveCamera(45, WIDTH / HEIGHT, 0.1, 20000);
-      // camera.position.set(0, 6, 0);
-      camera.position.set(6, 6, 65);
+      camera.position.set(0, 6, 0);
       scene.add(camera);
 
       window.addEventListener('resize', function() {
@@ -49,59 +48,26 @@
       light.position.set(-100, 200, 100);
       scene.add(light);
 
+      var loader = new THREE.JSONLoader();
+      loader.load( "models/owl_mesh.js", function(geometry) {
+        var material = new THREE.MeshLambertMaterial({ color: 0x55B663 });
+        mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+      });
+
       controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-      // logo
-      theLogo = new THREE.Object3D();
-      var logoMaterialRed = new THREE.MeshPhongMaterial( { color: 0xFF0000 } );
-
-      var geometry = new THREE.TorusGeometry( 12, 3, 16, 100 );
-      var torus = new THREE.Mesh( geometry, logoMaterialRed );
-      theLogo.add( torus )
-
-      for (var i = 0; i < 4; i++) {
-        var geometry = new THREE.SphereGeometry(3, 32, 16);
-        var sphere = new THREE.Mesh( geometry, logoMaterialRed );
-
-        var offset = 3.5;
-
-        switch (i) {
-          case 0:
-            sphere.position.x = -offset;
-            sphere.position.y = offset;
-            break;
-          case 1:
-            sphere.position.x = offset;
-            sphere.position.y = offset;
-            sphere.material = new THREE.MeshPhongMaterial( { color: 0xFFFFFF } );
-            break;
-          case 2:
-            sphere.position.x = -offset;
-            sphere.position.y = -offset;
-            sphere.material = new THREE.MeshPhongMaterial( { color: 0xFFFFFF } );
-            break;
-          case 3:
-            sphere.position.x = offset;
-            sphere.position.y = -offset;
-            break;
-          default:
-        }
-
-        theLogo.add( sphere )
-      }
-
-      scene.add(theLogo);
-
     }
 
-    function spinObject(){
-      // theLogo.rotation.z += 1 * Math.PI/180;
-      theLogo.rotation.y += 1 * Math.PI/180;
-    }
+    // var createMesh = function( geometry ){
+    //   var zmesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
+    //   zmesh.position.set( 0, 0, 0 );
+    //   zmesh.scale.set( 3, 3, 3 );
+    //   zmesh.overdraw = true;
+    //   scene.add( zmesh );
+    // };
 
     function animate() {
       requestAnimationFrame(animate);
-      spinObject();
       renderer.render(scene, camera);
       controls.update();
     }
